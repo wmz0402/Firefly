@@ -37,3 +37,12 @@ Firefly-docs/
 cache/
 package/
 .obsidian/
+
+# synced from external content repository
+/src/content/posts/
+/src/content/spec/
+/src/data/
+/public/images/
+
+# content repository (when CI clones it locally)
+/content/
