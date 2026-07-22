@@ -11,7 +11,7 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 	showInNavbar: true,
 
 	// 使用方式："meting" 使用 Meting API，"local" 使用本地音乐列表
-	mode: "meting",
+	mode: "local",
 
 	// 默认音量 (0-1)
 	volume: 0.7,
@@ -50,9 +50,44 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 	local: {
 		playlist: [
 			{
-				name: "使一颗心免于哀伤",
-				artist: "知更鸟 / HOYO-MiX / Chevy",
-				url: "/assets/music/使一颗心免于哀伤-哼唱.mp3",
+				name: "来自天堂的魔鬼",
+				artist: "TF_ING穆祉丞 & TF家族-王橹杰",
+				url: "/assets/music/TF_ING穆祉丞&TF家族-王橹杰 - 来自天堂的魔鬼.mp3",
+				cover: "/assets/music/cover/109951169585655912.webp",
+				lrc: "",
+			},
+			{
+				name: "恋人未满",
+				artist: "TF_ING穆祉丞",
+				url: "/assets/music/TF_ING穆祉丞 - 恋人未满.mp3",
+				cover: "/assets/music/cover/109951169585655912.webp",
+				lrc: "",
+			},
+			{
+				name: "多远都要在一起",
+				artist: "G.E.M. 邓紫棋",
+				url: "/assets/music/G.E.M. 邓紫棋 - 多远都要在一起.mp3",
+				cover: "/assets/music/cover/109951169585655912.webp",
+				lrc: "",
+			},
+			{
+				name: "追光者",
+				artist: "岑宁儿",
+				url: "/assets/music/岑宁儿 - 追光者.mp3",
+				cover: "/assets/music/cover/109951169585655912.webp",
+				lrc: "",
+			},
+			{
+				name: "心似烟火",
+				artist: "张鑫",
+				url: "/assets/music/张鑫 - 心似烟火.mp3",
+				cover: "/assets/music/cover/109951169585655912.webp",
+				lrc: "",
+			},
+			{
+				name: "茉莉雨",
+				artist: "林俊杰",
+				url: "/assets/music/林俊杰 - 茉莉雨.mp3",
 				cover: "/assets/music/cover/109951169585655912.webp",
 				lrc: "",
 			},
