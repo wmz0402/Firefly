@@ -1,6 +1,8 @@
 ---
 import { Icon } from "astro-icon/components";
+import Comment from "@components/comment/index.astro";
 import ImageWrapper from "@/components/common/ImageWrapper.astro";
+import { commentConfig } from "@/config/commentConfig";
 import { dynamicConfig } from "@/config/dynamicConfig";
 import { profileConfig } from "@/config/profileConfig";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
@@ -8,41 +10,58 @@ import MainGridLayout from "@/layouts/MainGridLayout.astro";
 const title = "动态";
 const description = "随手记下此刻的想法与日常。";
 const items = dynamicConfig.items || [];
+const isCommentEnabled = commentConfig?.type && commentConfig.type !== "none";
 ---
 
 <MainGridLayout title={title} description={description}>
   <div class="flex flex-col gap-4 w-full">
-    <!-- 顶部 Banner 卡片 -->
-    <div class="card-base p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-      <div class="flex items-center gap-4">
-        <div class="h-12 w-12 rounded-2xl bg-primary/15 text-primary flex items-center justify-center">
-          <Icon name="material-symbols:chat-bubble-outline-rounded" class="text-2xl" />
+    <!-- 顶部 Banner 卡片 + 搜索栏 -->
+    <div class="card-base p-6 flex flex-col gap-4">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div class="flex items-center gap-4">
+          <div class="h-12 w-12 rounded-2xl bg-primary/15 text-primary flex items-center justify-center">
+            <Icon name="material-symbols:chat-bubble-outline-rounded" class="text-2xl" />
+          </div>
+          <div>
+            <h1 class="text-2xl font-bold text-neutral-800 dark:text-neutral-100 flex items-center gap-2">
+              {title}
+            </h1>
+            <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
+              {description}
+            </p>
+          </div>
         </div>
-        <div>
-          <h1 class="text-2xl font-bold text-neutral-800 dark:text-neutral-100 flex items-center gap-2">
-            {title}
-          </h1>
-          <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
-            {description}
-          </p>
+        <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold">
+          <Icon name="material-symbols:rss-feed-rounded" class="text-sm" />
+          <span id="dynamic-count">{items.length} 动态</span>
         </div>
       </div>
-      <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold">
-        <Icon name="material-symbols:rss-feed-rounded" class="text-sm" />
-        <span>{items.length} 动态</span>
+
+      <!-- 动态本地搜索框 -->
+      <div class="relative w-full mt-2">
+        <Icon name="material-symbols:search-rounded" class="absolute left-3.5 top-1/2 -translate-y-1/2 text-neutral-400 text-lg pointer-events-none" />
+        <input
+          type="text"
+          id="dynamic-search-input"
+          placeholder="搜索动态..."
+          class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-black/10 dark:border-white/15 bg-black/5 dark:bg-white/5 text-neutral-800 dark:text-neutral-100 placeholder-neutral-400 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary transition-all text-sm"
+        />
       </div>
     </div>
 
     <!-- 动态列表 -->
-    {items.length === 0 ? (
-      <div class="card-base p-12 text-center text-neutral-400 dark:text-neutral-500">
-        <Icon name="material-symbols:inbox-outline-rounded" class="text-5xl mx-auto mb-3 opacity-50" />
-        <p class="text-base font-medium">暂无动态，后续随时添加类似朋友圈的想法~</p>
-      </div>
-    ) : (
-      <div class="flex flex-col gap-4">
-        {items.map((item) => (
-          <div class="card-base p-6 flex flex-col gap-3 relative">
+    <div id="dynamic-list-container" class="flex flex-col gap-4">
+      {items.length === 0 ? (
+        <div class="card-base p-12 text-center text-neutral-400 dark:text-neutral-500">
+          <Icon name="material-symbols:inbox-outline-rounded" class="text-5xl mx-auto mb-3 opacity-50" />
+          <p class="text-base font-medium">暂无动态，后续随时添加类似朋友圈的想法~</p>
+        </div>
+      ) : (
+        items.map((item, index) => (
+          <div
+            class="card-base p-6 flex flex-col gap-3 relative dynamic-card-item transition-all duration-300"
+            data-search-text={`${item.content} ${item.author || profileConfig.name} ${item.date}`}
+          >
             {/* 作者信息 & 发布时间 */}
             <div class="flex items-center justify-between">
               <div class="flex items-center gap-3">
@@ -63,8 +82,8 @@ const items = dynamicConfig.items || [];
 
               {item.pinned && (
                 <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded bg-primary/15 text-primary font-medium">
-                  <Icon name="fa7-solid:thumbtack" class="text-xs" />
-                  置顶
+                  <Icon name="fa7-solid:thumbtack" class="text-xs text-primary" />
+                  <span class="text-primary font-medium">置顶</span>
                 </span>
               )}
             </div>
@@ -97,9 +116,73 @@ const items = dynamicConfig.items || [];
                 ))}
               </div>
             )}
+
+            {/* 评论区展开/收起 */}
+            {isCommentEnabled && (
+              <div class="mt-2 pt-3 border-t border-black/5 dark:border-white/5">
+                <details class="group">
+                  <summary class="inline-flex items-center gap-1.5 text-xs text-neutral-500 hover:text-primary cursor-pointer select-none font-medium py-1 px-2.5 rounded-lg hover:bg-black/5 dark:hover:bg-white/5 transition-colors">
+                    <Icon name="material-symbols:chat-outline-rounded" class="text-sm text-primary" />
+                    <span>评论</span>
+                    <Icon name="material-symbols:keyboard-arrow-down-rounded" class="text-base group-open:rotate-180 transition-transform duration-200" />
+                  </summary>
+                  <div class="mt-3">
+                    <Comment customPath={`/dynamic/item-${item.id || index}`} />
+                  </div>
+                </details>
+              </div>
+            )}
           </div>
-        ))}
+        ))
+      )}
+      <div id="no-search-results" class="hidden card-base p-12 text-center text-neutral-400 dark:text-neutral-500">
+        <Icon name="material-symbols:search-off-rounded" class="text-5xl mx-auto mb-3 opacity-50" />
+        <p class="text-base font-medium">没有找到匹配的动态内容</p>
       </div>
-    )}
+    </div>
   </div>
+
+  <script is:inline>
+    function setupDynamicSearch() {
+      const searchInput = document.getElementById('dynamic-search-input');
+      const cards = document.querySelectorAll('.dynamic-card-item');
+      const noResults = document.getElementById('no-search-results');
+      const countEl = document.getElementById('dynamic-count');
+
+      if (!searchInput || !cards.length) return;
+
+      searchInput.addEventListener('input', function (e) {
+        const query = (e.target.value || '').trim().toLowerCase();
+        let visibleCount = 0;
+
+        cards.forEach((card) => {
+          const text = (card.getAttribute('data-search-text') || '').toLowerCase();
+          if (!query || text.includes(query)) {
+            card.classList.remove('hidden');
+            visibleCount++;
+          } else {
+            card.classList.add('hidden');
+          }
+        });
+
+        if (noResults) {
+          if (visibleCount === 0 && query) {
+            noResults.classList.remove('hidden');
+          } else {
+            noResults.classList.add('hidden');
+          }
+        }
+
+        if (countEl) {
+          countEl.textContent = `${visibleCount} 动态`;
+        }
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupDynamicSearch);
+    } else {
+      setupDynamicSearch();
+    }
+  </script>
 </MainGridLayout>
