@@ -45,6 +45,8 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		url: "#",
 		icon: "material-symbols:person",
 		children: [
+			// 动态
+			LinkPresets.Dynamic,
 			// 相册
 			LinkPresets.Gallery,
 		],
@@ -155,6 +157,11 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		url: "/gallery/",
 		icon: "material-symbols:photo-library",
 		pageKey: "gallery",
+	},
+	Dynamic: {
+		name: "动态",
+		url: "/dynamic/",
+		icon: "material-symbols:chat-bubble-outline-rounded",
 	},
 	Anime: {
 		name: "追番",

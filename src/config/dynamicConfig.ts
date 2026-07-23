@@ -1,8 +1,12 @@
 export interface DynamicItem {
+	id?: string;
+	author?: string;
+	avatar?: string;
 	date: string;
 	content: string;
 	pinned?: boolean;
 	link?: string;
+	images?: string[];
 }
 
 export interface DynamicConfig {

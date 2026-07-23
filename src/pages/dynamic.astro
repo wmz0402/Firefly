@@ -1,0 +1,105 @@
+---
+import { Icon } from "astro-icon/components";
+import ImageWrapper from "@/components/common/ImageWrapper.astro";
+import { dynamicConfig } from "@/config/dynamicConfig";
+import { profileConfig } from "@/config/profileConfig";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+
+const title = "动态";
+const description = "随手记下此刻的想法与日常。";
+const items = dynamicConfig.items || [];
+---
+
+<MainGridLayout title={title} description={description}>
+  <div class="flex flex-col gap-4 w-full">
+    <!-- 顶部 Banner 卡片 -->
+    <div class="card-base p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div class="flex items-center gap-4">
+        <div class="h-12 w-12 rounded-2xl bg-primary/15 text-primary flex items-center justify-center">
+          <Icon name="material-symbols:chat-bubble-outline-rounded" class="text-2xl" />
+        </div>
+        <div>
+          <h1 class="text-2xl font-bold text-neutral-800 dark:text-neutral-100 flex items-center gap-2">
+            {title}
+          </h1>
+          <p class="text-sm text-neutral-500 dark:text-neutral-400 mt-1">
+            {description}
+          </p>
+        </div>
+      </div>
+      <div class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-semibold">
+        <Icon name="material-symbols:rss-feed-rounded" class="text-sm" />
+        <span>{items.length} 动态</span>
+      </div>
+    </div>
+
+    <!-- 动态列表 -->
+    {items.length === 0 ? (
+      <div class="card-base p-12 text-center text-neutral-400 dark:text-neutral-500">
+        <Icon name="material-symbols:inbox-outline-rounded" class="text-5xl mx-auto mb-3 opacity-50" />
+        <p class="text-base font-medium">暂无动态，后续随时添加类似朋友圈的想法~</p>
+      </div>
+    ) : (
+      <div class="flex flex-col gap-4">
+        {items.map((item) => (
+          <div class="card-base p-6 flex flex-col gap-3 relative">
+            {/* 作者信息 & 发布时间 */}
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <ImageWrapper
+                  src={item.avatar || profileConfig.avatar}
+                  alt={item.author || profileConfig.name}
+                  class="w-10 h-10 rounded-full object-cover border border-black/5 dark:border-white/10"
+                />
+                <div>
+                  <div class="font-bold text-neutral-800 dark:text-neutral-100 text-base">
+                    {item.author || profileConfig.name}
+                  </div>
+                  <div class="text-xs text-neutral-400 dark:text-neutral-500">
+                    {item.date}
+                  </div>
+                </div>
+              </div>
+
+              {item.pinned && (
+                <span class="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded bg-primary/15 text-primary font-medium">
+                  <Icon name="fa7-solid:thumbtack" class="text-xs" />
+                  置顶
+                </span>
+              )}
+            </div>
+
+            {/* 动态文本正文 */}
+            <div class="text-neutral-700 dark:text-neutral-200 text-base leading-relaxed break-words whitespace-pre-line">
+              {item.link ? (
+                <a href={item.link} target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors underline decoration-dotted">
+                  {item.content}
+                </a>
+              ) : (
+                item.content
+              )}
+            </div>
+
+            {/* 图片九宫格/多图排列 */}
+            {item.images && item.images.length > 0 && (
+              <div class:list={[
+                "grid gap-2 mt-2",
+                item.images.length === 1 ? "grid-cols-1 max-w-md" : "grid-cols-2 md:grid-cols-3 max-w-xl"
+              ]}>
+                {item.images.map((imgSrc) => (
+                  <div class="rounded-xl overflow-hidden aspect-square border border-black/5 dark:border-white/5 bg-black/5">
+                    <ImageWrapper
+                      src={imgSrc}
+                      alt="Dynamic Attachment Image"
+                      class="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+</MainGridLayout>
