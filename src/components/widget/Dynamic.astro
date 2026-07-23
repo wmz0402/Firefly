@@ -28,16 +28,16 @@ const totalCount = config.items.length;
       <div class:list={[
         "rounded-xl p-3 text-sm transition-all duration-200",
         item.pinned 
-          ? "bg-primary/10 dark:bg-primary/15 border border-primary/20" 
+          ? "bg-(--btn-regular-bg) border border-(--primary)/20" 
           : "bg-black/5 dark:bg-white/5 hover:bg-black/10 dark:hover:bg-white/10"
       ]}>
         <div class="flex items-center justify-between gap-2 text-xs text-neutral-500 dark:text-neutral-400 mb-1.5">
-          <span class="inline-flex items-center gap-1 font-medium">
-            <Icon name="material-symbols:schedule-outline-rounded" class="text-sm text-primary" />
+          <span class="inline-flex items-center gap-1 font-medium text-(--primary)">
+            <Icon name="material-symbols:schedule-outline-rounded" class="text-sm text-(--primary)" />
             {item.date}
           </span>
           {item.pinned && (
-            <span class="inline-flex items-center gap-1 text-[11px] px-1.5 py-0.5 rounded bg-primary/20 text-primary font-medium">
+            <span class="inline-flex items-center gap-1 text-[11px] px-1.5 py-0.5 rounded bg-(--btn-regular-bg) text-(--primary) font-medium">
               <Icon name="fa7-solid:thumbtack" class="text-xs" />
               置顶
             </span>
@@ -45,7 +45,7 @@ const totalCount = config.items.length;
         </div>
         <div class="text-neutral-700 dark:text-neutral-200 leading-relaxed break-words">
           {item.link ? (
-            <a href={item.link} class="hover:text-primary transition-colors">
+            <a href={item.link} class="hover:text-(--primary) transition-colors">
               {item.content}
             </a>
           ) : (
@@ -59,7 +59,7 @@ const totalCount = config.items.length;
       <div class="flex justify-center pt-1 border-t border-black/5 dark:border-white/5">
         <a
           href={config.moreUrl}
-          class="inline-flex items-center gap-1 text-xs text-primary font-medium hover:underline py-1"
+          class="inline-flex items-center gap-1 text-xs text-(--primary) font-medium hover:underline py-1"
         >
           <Icon name="material-symbols:article-outline-rounded" class="text-sm" />
           {config.moreText || "更多动态"} {totalCount > 0 && `(${totalCount})`}
