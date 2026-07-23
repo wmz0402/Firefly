@@ -75,7 +75,7 @@ const managerConfigStr = JSON.stringify({
         if (!lrc) return [];
         var lines = lrc.split('\n');
         var result = [];
-        var timeReg = /\[(\d{2}):(\d{2})\.(\d{2,3})\]/g;
+        var timeReg = /\[(\d{1,2}):(\d{2})(?:\.(\d{2,3}))?\]/g;
         lines.forEach(function (line) {
             var matches = Array.from(line.matchAll(timeReg));
             if (matches.length > 0) {
@@ -84,8 +84,9 @@ const managerConfigStr = JSON.stringify({
                     matches.forEach(function (match) {
                         var m = parseInt(match[1]);
                         var s = parseInt(match[2]);
-                        var ms = parseInt(match[3]);
-                        var time = m * 60 + s + ms / (match[3].length === 3 ? 1000 : 100);
+                        var ms = match[3] ? parseInt(match[3]) : 0;
+                        var msDenominator = (match[3] && match[3].length === 3) ? 1000 : 100;
+                        var time = m * 60 + s + (match[3] ? ms / msDenominator : 0);
                         result.push({ time: time, text: text });
                     });
                 }
