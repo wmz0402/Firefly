@@ -28,6 +28,7 @@ const lqipProps = !isRemote ? getLqipProps(src, undefined, true) : { style: "" }
       alt={alt}
       loading="lazy"
       decoding="async"
+      referrerpolicy="no-referrer"
       class:list={[
         "w-full h-auto object-cover transition-all duration-500 ease-out group-hover:scale-105",
         !isRemote && "opacity-0"
