@@ -32,8 +32,8 @@ const photos = scanAlbumPhotos(albumMeta.id);
 const cover = getAlbumCover(albumMeta, photos);
 const columnWidth = galleryConfig.columnWidth || 240;
 
-// LQIP 渐变占位
-const coverLqipProps = cover
+const isCoverRemote = /^(https?:)?\/\//i.test(cover);
+const coverLqipProps = cover && !isCoverRemote
 	? getLqipProps(cover, undefined, true)
 	: { style: "" };
 ---
@@ -43,11 +43,16 @@ const coverLqipProps = cover
   <div class="w-full rounded-(--radius-large) overflow-hidden relative">
     {cover ? (
       <div class="relative w-full aspect-[3/1] min-h-[200px] max-h-[360px] overflow-hidden">
-        <div class="lqip-placeholder absolute inset-0 pointer-events-none" style={coverLqipProps.style} aria-hidden="true"></div>
+        {!isCoverRemote && (
+          <div class="lqip-placeholder absolute inset-0 pointer-events-none" style={coverLqipProps.style} aria-hidden="true"></div>
+        )}
         <img
           src={cover}
           alt={albumMeta.name}
-          class="w-full h-full object-cover opacity-0 transition-opacity duration-500 ease-out"
+          class:list={[
+            "w-full h-full object-cover transition-opacity duration-500 ease-out",
+            !isCoverRemote && "opacity-0"
+          ]}
         />
         <div class="absolute inset-0 bg-linear-to-t from-black/70 via-black/30 to-transparent" />
         <!-- 返回按钮 -->
