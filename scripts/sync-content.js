@@ -156,11 +156,15 @@ function main() {
     const srcPath = path.join(CONTENT_DIR, m.src);
     const destPath = path.join(rootDir, m.dest);
 
+    assertSafeDestination(destPath);
     if (!fs.existsSync(srcPath)) {
+      if (fs.existsSync(destPath)) {
+        fs.rmSync(destPath, { recursive: true, force: true });
+        fs.mkdirSync(destPath, { recursive: true });
+      }
       continue;
     }
 
-    assertSafeDestination(destPath);
     syncRecursive(srcPath, destPath, new Set(m.preserve || []));
     console.log(`[sync-content] 已同步: ${m.src} -> ${m.dest}`);
   }
