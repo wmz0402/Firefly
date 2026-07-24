@@ -38,6 +38,10 @@ jobs:
         run: pnpm install --no-frozen-lockfile
       
       - name: Build site
+        env:
+          ENABLE_CONTENT_SYNC: "true"
+          CONTENT_REPO_URL: "https://github.com/wmz0402/Firefly-Content.git"
+          CONTENT_SYNC_PULL: "true"
         run: pnpm run build
 
       - name: Create .nojekyll file

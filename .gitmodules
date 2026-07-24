@@ -1,0 +1,3 @@
+[submodule "src/content_submodule"]
+	path = src/content_submodule
+	url = https://github.com/wmz0402/Firefly-Content.git
